@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     CallbackManager callbackManager;
     TextView txtEmail, txtBirthday, txtFriends;
     ProgressDialog mDialog;
-    ImageView imAvatar;
+    ImageView imgAvatar;
 
 
     public final String TAG = this.getClass().getSimpleName();
