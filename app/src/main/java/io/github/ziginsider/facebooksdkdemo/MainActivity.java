@@ -111,7 +111,18 @@ public class MainActivity extends AppCompatActivity {
         if (AccessToken.getCurrentAccessToken() != null) {
 
             //Just set User ID
-            txtEmail.setText(AccessToken.getCurrentAccessToken().getUserId());
+            GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) {
+                     getData(object);
+                }
+            });
+
+            //Request Graph API
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id, email, birthday, friends");
+            request.setParameters(parameters);
+            request.executeAsync();
         }
     }
 
