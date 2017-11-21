@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +24,9 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -30,7 +36,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     TextView txtEmail, txtBirthday, txtFriends, txtLocation;
     ProgressDialog mDialog;
     ImageView imgAvatar;
+    Button shareButton;
+    private ShareDialog shareDialog;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -63,17 +73,24 @@ public class MainActivity extends AppCompatActivity {
 
         imgAvatar = (ImageView) findViewById(R.id.avatar);
 
+        shareButton = (Button) findViewById(R.id.share_button);
+        shareButton.setVisibility(View.GONE);
+
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
 
         loginButton.setReadPermissions(Arrays.asList("public_profile",
                 "email",
                 "user_location",
                 "user_birthday",
-                "user_friends"));
+                "user_friends",
+                "user_posts"));
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
+                shareButton.setVisibility(View.VISIBLE);
+
                 mDialog = new ProgressDialog(MainActivity.this);
                 mDialog.setMessage("Retrieving data...");
                 mDialog.show();
@@ -112,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
         // If already login
         if (AccessToken.getCurrentAccessToken() != null) {
 
+            shareButton.setVisibility(View.VISIBLE);
+
             //Just set User ID
             GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
@@ -127,6 +146,32 @@ public class MainActivity extends AppCompatActivity {
             request.setParameters(parameters);
             request.executeAsync();
         }
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share();
+            }
+        });
+    }
+
+    private void share() {
+        shareDialog = new ShareDialog(this);
+        List<String> taggedUserIds= new ArrayList<String>();
+        taggedUserIds.add("{USER_ID}");
+        taggedUserIds.add("{USER_ID}");
+        taggedUserIds.add("{USER_ID}");
+
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("http://ziginsider.github.io"))
+                .setContentTitle("This is a content title")
+                .setContentDescription("This is a description")
+                .setShareHashtag(new ShareHashtag.Builder().setHashtag("#ziginsider").build())
+                .setPeopleIds(taggedUserIds)
+                .setPlaceId("{PLACE_ID}")
+                .build();
+
+        shareDialog.show(content);
     }
 
     private void getData(JSONObject object) {
