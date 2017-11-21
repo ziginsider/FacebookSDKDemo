@@ -82,8 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 "email",
                 "user_location",
                 "user_birthday",
-                "user_friends",
-                "user_posts"));
+                "user_friends"));
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
