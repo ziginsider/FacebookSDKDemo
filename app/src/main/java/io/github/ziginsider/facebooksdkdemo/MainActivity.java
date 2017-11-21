@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
     public final String TAG = this.getClass().getSimpleName();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
