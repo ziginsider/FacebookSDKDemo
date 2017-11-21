@@ -55,5 +55,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Share content" />
+
+        <Button
+            android:id="@+id/posts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Get posts" />
     </LinearLayout>
 </RelativeLayout>

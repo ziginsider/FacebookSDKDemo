@@ -22,6 +22,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.share.model.ShareHashtag;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imgAvatar;
     Button shareButton;
     private ShareDialog shareDialog;
+    Button postsButton;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -57,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
     public final String TAG = this.getClass().getSimpleName();
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -76,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
         shareButton = (Button) findViewById(R.id.share_button);
         shareButton.setVisibility(View.GONE);
 
+        postsButton = (Button) findViewById(R.id.posts_button);
+        postsButton.setVisibility(View.GONE);
+
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
 
         loginButton.setReadPermissions(Arrays.asList("public_profile",
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
 
                 shareButton.setVisibility(View.VISIBLE);
+                postsButton.setVisibility(View.VISIBLE);
 
                 mDialog = new ProgressDialog(MainActivity.this);
                 mDialog.setMessage("Retrieving data...");
@@ -129,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         if (AccessToken.getCurrentAccessToken() != null) {
 
             shareButton.setVisibility(View.VISIBLE);
+            postsButton.setVisibility(View.VISIBLE);
 
             //Just set User ID
             GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
@@ -152,6 +159,27 @@ public class MainActivity extends AppCompatActivity {
                 share();
             }
         });
+
+        postsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPosts();
+            }
+        });
+    }
+
+    private void getPosts() {
+        new GraphRequest(
+            AccessToken.getCurrentAccessToken(),
+            "/me/posts",
+            null,
+            HttpMethod.GET,
+            new GraphRequest.Callback() {
+                public void onCompleted(GraphResponse response) {
+                    Log.e(TAG,response.toString());
+                }
+            }
+        ).executeAsync();
     }
 
     private void share() {
