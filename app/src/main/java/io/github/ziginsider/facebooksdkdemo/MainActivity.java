@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             HttpMethod.GET,
             new GraphRequest.Callback() {
                 public void onCompleted(GraphResponse response) {
-                    Log.e(TAG,response.toString());
+                    Log.e(TAG,response.getJSONObject().toString());
                 }
             }
         ).executeAsync();
