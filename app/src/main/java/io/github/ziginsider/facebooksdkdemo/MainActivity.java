@@ -138,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
             shareButton.setVisibility(View.VISIBLE);
             postsButton.setVisibility(View.VISIBLE);
 
-            //Just set User ID
             GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
@@ -147,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-            //Request Graph API
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id, email, location, birthday, friends");
             request.setParameters(parameters);
